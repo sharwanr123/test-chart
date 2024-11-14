@@ -1,0 +1,36 @@
+name: Vercel Deployment
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment on push to 'main' branch (you can change this to any branch)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Set up Node.js (optional, if you use Node.js)
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # specify your node version
+
+    # Install dependencies (if using Node.js)
+    - name: Install dependencies
+      run: npm install
+
+    # Build the project (optional, if using a build step)
+    - name: Build the project
+      run: npm run build
+
+    # Vercel deploy using the Vercel CLI
+    - name: Deploy to Vercel
+      run: |
+        curl -sL https://github.com/vercel/vercel/releases/download/v29.0.2/vercel-v29.0.2-linux-x64.tar.gz | tar xz
+        sudo mv vercel /usr/local/bin
+        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod
